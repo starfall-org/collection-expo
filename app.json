@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Multimedia",
-    "slug": "Multimedia",
+    "slug": "multimedia",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,10 +19,18 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": ["INTERNET"],
+      "package": "com.bosuutap.multimedia"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6ada6e27-1c24-4ec5-96ee-0b16e4e88e7c"
+      }
+    },
+    "owner": "bosuutap"
   }
 }
