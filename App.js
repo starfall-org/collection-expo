@@ -7,11 +7,13 @@ import {
   FlatList,
   TouchableOpacity,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import { ListObjectsV2Command, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { s3Client } from "./libs/minioClient"; // Đảm bảo import đúng client S3
+import { s3Client } from "./libs/s3Client";
 import VideoPlayer from "./VideoPlayer";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const BUCKET_NAME = "bosuutap";
 const FOLDER_NAME = "video";
@@ -21,7 +23,6 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [selectedVideo, setSelectedVideo] = useState(null);
 
-  // Hàm liệt kê các file trong folder S3
   const listFilesInFolder = async (bucketName, folderName) => {
     try {
       const command = new ListObjectsV2Command({
@@ -31,7 +32,6 @@ export default function App() {
 
       const response = await s3Client.send(command);
 
-      // Trích xuất tên file, loại bỏ đường dẫn thư mục
       return response.Contents
         ? response.Contents.filter((obj) => obj.Key !== folderName + "/").map(
             (obj) => obj.Key.replace(folderName + "/", "")
@@ -43,19 +43,15 @@ export default function App() {
     }
   };
 
-  // Hàm tạo URL có chữ ký cho video
   const generatePresignedUrl = async (bucketName, objectKey) => {
     try {
       const command = new GetObjectCommand({
         Bucket: bucketName,
         Key: objectKey,
       });
-
-      // Tạo URL có chữ ký với thời hạn 1 giờ
       const presignedUrl = await getSignedUrl(s3Client, command, {
         expiresIn: 3600,
       });
-
       return presignedUrl;
     } catch (error) {
       console.error("Error generating presigned URL:", error);
@@ -86,7 +82,6 @@ export default function App() {
       );
 
       if (presignedUrl) {
-        // Tạo đối tượng source cho VideoPlayer
         setSelectedVideo({ uri: presignedUrl });
       }
     } catch (error) {
@@ -99,30 +94,46 @@ export default function App() {
       style={styles.fileItem}
       onPress={() => handleFilePress(item)}
     >
-      <Text style={styles.fileName}>{item}</Text>
+      <Icon name="videocam" size={24} color="#007bff" style={styles.fileIcon} />
+      <Text style={styles.fileName} numberOfLines={1} ellipsizeMode="tail">
+        {item}
+      </Text>
+      <Icon name="chevron-forward" size={20} color="#888" />
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Danh sách video từ S3</Text>
+      <StatusBar barStyle="dark-content" backgroundColor="#f4f4f4" />
+
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerTitle}>Video Collection</Text>
+      </View>
 
       {loading ? (
-        <Text>Đang tải...</Text>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#007bff" />
+          <Text style={styles.loadingText}>Đang tải...</Text>
+        </View>
       ) : files.length === 0 ? (
-        <Text>Không có video nào</Text>
+        <View style={styles.emptyStateContainer}>
+          <Icon name="folder-open" size={64} color="#888" />
+          <Text style={styles.emptyStateText}>Không có video nào</Text>
+        </View>
       ) : (
         <FlatList
           data={files}
           renderItem={renderFileItem}
           keyExtractor={(item) => item}
           style={styles.fileList}
+          showsVerticalScrollIndicator={false}
         />
       )}
 
       <Modal
         visible={!!selectedVideo}
         transparent={false}
+        animationType="slide"
         onRequestClose={() => setSelectedVideo(null)}
       >
         {selectedVideo && (
@@ -132,13 +143,11 @@ export default function App() {
               style={styles.closeButton}
               onPress={() => setSelectedVideo(null)}
             >
-              <Text style={styles.closeButtonText}>Đóng</Text>
+              <Icon name="close" size={24} color="white" />
             </TouchableOpacity>
           </View>
         )}
       </Modal>
-
-      <StatusBar style="auto" />
     </View>
   );
 }
@@ -146,43 +155,79 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    paddingTop: 50,
-    paddingHorizontal: 20,
+    backgroundColor: "#f4f4f4",
   },
-  title: {
+  headerContainer: {
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    backgroundColor: "#ffffff",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  headerTitle: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 20,
+    color: "#333",
     textAlign: "center",
   },
   fileList: {
-    flex: 1,
+    paddingHorizontal: 20,
+    marginTop: 10,
   },
   fileItem: {
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#ffffff",
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  fileIcon: {
+    marginRight: 10,
   },
   fileName: {
     fontSize: 16,
+    color: "#333",
+    flex: 1,
   },
-  modalContainer: {
+  loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#007bff",
+  },
+  emptyStateContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyStateText: {
+    fontSize: 18,
+    color: "#888",
+    marginTop: 10,
+  },
+  modalContainer: {
+    flex: 1,
     backgroundColor: "black",
   },
   closeButton: {
     position: "absolute",
-    bottom: 20,
-    backgroundColor: "white",
+    top: 40,
+    right: 20,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 25,
     padding: 10,
-    borderRadius: 5,
-  },
-  closeButtonText: {
-    color: "black",
-    fontSize: 16,
   },
 });
