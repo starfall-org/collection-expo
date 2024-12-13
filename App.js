@@ -107,7 +107,7 @@ export default function App() {
       <StatusBar barStyle="dark-content" backgroundColor="#f4f4f4" />
 
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Video Collection</Text>
+        <Text style={styles.headerTitle}>Collection</Text>
       </View>
 
       {loading ? (
