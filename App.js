@@ -106,10 +106,6 @@ export default function App() {
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#f4f4f4" />
 
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>Collection</Text>
-      </View>
-
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#007bff" />
@@ -156,22 +152,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f4f4f4",
-  },
-  headerContainer: {
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    backgroundColor: "#ffffff",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
-    textAlign: "center",
   },
   fileList: {
     paddingHorizontal: 20,
