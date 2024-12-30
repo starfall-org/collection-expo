@@ -24,7 +24,7 @@
       "package": "com.bosuutap.multimedia"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "https://lf1-cdn-tos.bytegoofy.com/goofy/ies/douyin_web/public/favicon.ico"
     },
     "extra": {
       "eas": {
