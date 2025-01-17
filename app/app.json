@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Multimedia",
-    "slug": "bo-suu-tap",
+    "name": "Bộ Sưu Tập Douyin",
+    "slug": "bo-suu-tap-douyin",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/favicon.png",
@@ -23,14 +23,14 @@
       "permissions": [
         "INTERNET"
       ],
-      "package": "com.bosuutap.multimedia"
+      "package": "com.bosuutap.DouyinCollection"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "c4d394ee-5082-4758-a806-ce2eac5e966e"
+        "projectId": "a25509bc-9b9c-406e-94c2-7a73b1e11617"
       }
     },
     "owner": "bosuutap"
