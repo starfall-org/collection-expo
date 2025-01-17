@@ -8,51 +8,37 @@ import {
   TouchableOpacity,
   Modal,
   ActivityIndicator,
+  useColorScheme,
 } from "react-native";
-import { ListObjectsV2Command, GetObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { s3Client } from "./libs/s3Client";
-import VideoPlayer from "./VideoPlayer";
 import Icon from "react-native-vector-icons/Ionicons";
+import VideoPlayer from "./VideoPlayer";
 
-const BUCKET_NAME = "bosuutap";
-const FOLDER_NAME = "video";
+const API_URL = "https://collection-backend.deno.dev";
 
 export default function App() {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [autoPlayNext, setAutoPlayNext] = useState(false);
+  const colorScheme = useColorScheme();
 
-  const listFilesInFolder = async (bucketName, folderName) => {
+  const listFilesInFolder = async () => {
     try {
-      const command = new ListObjectsV2Command({
-        Bucket: bucketName,
-        Prefix: folderName + "/",
-      });
-
-      const response = await s3Client.send(command);
-
-      return response.Contents
-        ? response.Contents.filter((obj) => obj.Key !== folderName + "/").map(
-            (obj) => obj.Key.replace(folderName + "/", "")
-          )
-        : [];
+      const response = await fetch(`${API_URL}/api/files`);
+      if (!response.ok) throw new Error('Network response was not ok');
+      return await response.json();
     } catch (error) {
       console.error("Error listing files:", error);
       return [];
     }
   };
 
-  const generatePresignedUrl = async (bucketName, objectKey) => {
+  const generatePresignedUrl = async (fileName) => {
     try {
-      const command = new GetObjectCommand({
-        Bucket: bucketName,
-        Key: objectKey,
-      });
-      const presignedUrl = await getSignedUrl(s3Client, command, {
-        expiresIn: 3600,
-      });
-      return presignedUrl;
+      const response = await fetch(`${API_URL}/api/presigned-url/${encodeURIComponent(fileName)}`);
+      if (!response.ok) throw new Error('Network response was not ok');
+      const data = await response.json();
+      return data.url;
     } catch (error) {
       console.error("Error generating presigned URL:", error);
       return null;
@@ -65,7 +51,7 @@ export default function App() {
 
   const fetchFiles = async () => {
     try {
-      const fileList = await listFilesInFolder(BUCKET_NAME, FOLDER_NAME);
+      const fileList = await listFilesInFolder();
       setFiles(fileList);
       setLoading(false);
     } catch (error) {
@@ -76,17 +62,31 @@ export default function App() {
 
   const handleFilePress = async (fileName) => {
     try {
-      const presignedUrl = await generatePresignedUrl(
-        BUCKET_NAME,
-        `${FOLDER_NAME}/${fileName}`
-      );
-
+      const presignedUrl = await generatePresignedUrl(fileName);
       if (presignedUrl) {
-        setSelectedVideo({ uri: presignedUrl });
+        setSelectedVideo({ uri: presignedUrl, name: fileName });
       }
     } catch (error) {
       console.error("Error opening file:", error);
     }
+  };
+
+  const handleVideoEnd = () => {
+    if (autoPlayNext) {
+      const currentIndex = files.indexOf(selectedVideo.name);
+      const nextIndex = (currentIndex + 1) % files.length;
+      handleFilePress(files[nextIndex]);
+    }
+  };
+
+  const handleVideoPrevious = () => {
+    const currentIndex = files.indexOf(selectedVideo.name);
+    const previousIndex = (currentIndex - 1 + files.length) % files.length;
+    handleFilePress(files[previousIndex]);
+  };
+
+  const toggleAutoPlayNext = () => {
+    setAutoPlayNext(!autoPlayNext);
   };
 
   const renderFileItem = ({ item }) => (
@@ -103,8 +103,8 @@ export default function App() {
   );
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#f4f4f4" />
+    <View style={[styles.container, { backgroundColor: colorScheme === 'dark' ? '#000' : '#f4f4f4' }]}>
+      <StatusBar barStyle={colorScheme === 'dark' ? "light-content" : "dark-content"} backgroundColor={colorScheme === 'dark' ? "#000" : "#f4f4f4"} />
 
       {loading ? (
         <View style={styles.loadingContainer}>
@@ -134,7 +134,13 @@ export default function App() {
       >
         {selectedVideo && (
           <View style={styles.modalContainer}>
-            <VideoPlayer videoSource={selectedVideo} />
+            <VideoPlayer
+              videoSource={selectedVideo}
+              onEnd={handleVideoEnd}
+              onPrevious={handleVideoPrevious}
+              autoPlayNext={autoPlayNext}
+              toggleAutoPlayNext={toggleAutoPlayNext}
+            />
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setSelectedVideo(null)}
@@ -151,7 +157,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f4f4f4",
   },
   fileList: {
     paddingHorizontal: 20,

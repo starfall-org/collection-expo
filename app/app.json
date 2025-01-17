@@ -1,10 +1,10 @@
 {
   "expo": {
     "name": "Multimedia",
-    "slug": "multimedia",
+    "slug": "bo-suu-tap",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/favicon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -20,7 +20,9 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["INTERNET"],
+      "permissions": [
+        "INTERNET"
+      ],
       "package": "com.bosuutap.multimedia"
     },
     "web": {
@@ -28,7 +30,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "6ada6e27-1c24-4ec5-96ee-0b16e4e88e7c"
+        "projectId": "c4d394ee-5082-4758-a806-ce2eac5e966e"
       }
     },
     "owner": "bosuutap"
