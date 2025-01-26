@@ -1,0 +1,13 @@
+name: multimedia
+region: us-east-1
+yamlVersion: 2
+frontend:
+  path: .
+  sdk:
+    language: js
+  publish: dist
+  script:
+    build: npx expo export
+    deploy:
+      - npm install
+  subdomain: collection

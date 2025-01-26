@@ -7,7 +7,6 @@ import { getSignedUrl } from "https://deno.land/x/aws_sdk@v3.32.0-1/s3-request-p
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 
 const BUCKET_NAME = "bosuutap";
-const FOLDER_NAME = "Movies";
 
 const s3Client = new S3Client({
   endpoint: "https://q0w7.sg.idrivee2-43.com",
@@ -39,15 +38,15 @@ async function handler(req: Request): Promise<Response> {
     if (path === "/api/files") {
       const command = new ListObjectsV2Command({
         Bucket: BUCKET_NAME,
-        Prefix: FOLDER_NAME + "/",
       });
 
       const response = await s3Client.send(command);
       const files = response.Contents
-        ? response.Contents.filter((obj) => obj.Key !== FOLDER_NAME + "/").map(
-          (obj) => obj.Key.replace(FOLDER_NAME + "/", ""),
-        )
+        ? response.Contents.filter((obj: any) => obj.Key.endsWith(".mp4")).map(
+            (obj: any) => obj.Key
+          )
         : [];
+      files.reverse();
 
       return new Response(JSON.stringify(files), {
         headers: {
@@ -57,11 +56,11 @@ async function handler(req: Request): Promise<Response> {
       });
     } else if (path.startsWith("/api/presigned-url/")) {
       const fileName = decodeURIComponent(
-        path.replace("/api/presigned-url/", ""),
+        path.replace("/api/presigned-url/", "")
       );
       const command = new GetObjectCommand({
         Bucket: BUCKET_NAME,
-        Key: `${FOLDER_NAME}/${fileName}`,
+        Key: fileName
       });
 
       const presignedUrl = await getSignedUrl(s3Client, command, {
