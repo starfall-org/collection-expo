@@ -6,26 +6,31 @@ import {
   View,
   FlatList,
   TouchableOpacity,
-  Modal,
   ActivityIndicator,
   useColorScheme,
 } from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
-import VideoPlayer from "./VideoPlayer";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import Player from "./Player";
+import SwipeableBox from "./SwipeBox";
 
 const API_URL = "https://collection-backend.deno.dev";
 
 export default function App() {
+  const [showPlaylist, setShowPlaylist] = useState(false);
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [autoPlayNext, setAutoPlayNext] = useState(false);
   const colorScheme = useColorScheme();
 
+  const togglePlaylist = () => {
+    setShowPlaylist(!showPlaylist);
+  };
+
   const listFilesInFolder = async () => {
     try {
       const response = await fetch(`${API_URL}/api/files`);
-      if (!response.ok) throw new Error('Network response was not ok');
+      if (!response.ok) throw new Error("Network response was not ok");
       return await response.json();
     } catch (error) {
       console.error("Error listing files:", error);
@@ -35,8 +40,10 @@ export default function App() {
 
   const generatePresignedUrl = async (fileName) => {
     try {
-      const response = await fetch(`${API_URL}/api/presigned-url/${encodeURIComponent(fileName)}`);
-      if (!response.ok) throw new Error('Network response was not ok');
+      const response = await fetch(
+        `${API_URL}/api/presigned-url/${encodeURIComponent(fileName)}`
+      );
+      if (!response.ok) throw new Error("Network response was not ok");
       const data = await response.json();
       return data.url;
     } catch (error) {
@@ -66,6 +73,7 @@ export default function App() {
       if (presignedUrl) {
         setSelectedVideo({ uri: presignedUrl, name: fileName });
       }
+      setShowPlaylist(false);
     } catch (error) {
       console.error("Error opening file:", error);
     }
@@ -89,99 +97,121 @@ export default function App() {
     setAutoPlayNext(!autoPlayNext);
   };
 
-  const renderFileItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.fileItem}
-      onPress={() => handleFilePress(item)}
-    >
-      <Icon name="videocam" size={24} color="#007bff" style={styles.fileIcon} />
-      <Text style={styles.fileName} numberOfLines={1} ellipsizeMode="tail">
-        {item}
-      </Text>
-      <Icon name="chevron-forward" size={20} color="#888" />
-    </TouchableOpacity>
-  );
+  useEffect(() => {
+    const initializeApp = async () => {
+      try {
+        const fileList = await listFilesInFolder();
+        console.log("Files loaded:", fileList);
+        setFiles(fileList);
+        if (fileList.length > 0) {
+          const firstVideoUrl = await generatePresignedUrl(fileList[0]);
+          console.log("First video URL:", firstVideoUrl);
+          setSelectedVideo({ uri: firstVideoUrl, name: fileList[0] });
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Error initializing app:", error);
+        setLoading(false);
+      }
+    };
+
+    initializeApp();
+  }, []);
 
   return (
-    <View style={[styles.container, { backgroundColor: colorScheme === 'dark' ? '#000' : '#f4f4f4' }]}>
-      <StatusBar barStyle={colorScheme === 'dark' ? "light-content" : "dark-content"} backgroundColor={colorScheme === 'dark' ? "#000" : "#f4f4f4"} />
+    <View
+      style={{
+        flex: 1,
+      }}
+    >
+      <StatusBar barStyle={"light-content"} />
 
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#007bff" />
-          <Text style={styles.loadingText}>Đang tải...</Text>
-        </View>
-      ) : files.length === 0 ? (
-        <View style={styles.emptyStateContainer}>
-          <Icon name="folder-open" size={64} color="#888" />
-          <Text style={styles.emptyStateText}>Không có video nào</Text>
+          <Text
+            style={[
+              styles.loadingText,
+              { color: colorScheme === "dark" ? "#ffffff" : "#007bff" },
+            ]}
+          >
+            Đang tải...
+          </Text>
         </View>
       ) : (
-        <FlatList
-          data={files}
-          renderItem={renderFileItem}
-          keyExtractor={(item) => item}
-          style={styles.fileList}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
+        <View style={{ flex: 1 }}>
+          <SwipeableBox />
+          {selectedVideo && (
+            <Player videoSource={selectedVideo} onEnd={handleVideoEnd} />
+          )}
 
-      <Modal
-        visible={!!selectedVideo}
-        transparent={false}
-        animationType="slide"
-        onRequestClose={() => setSelectedVideo(null)}
-      >
-        {selectedVideo && (
-          <View style={styles.modalContainer}>
-            <VideoPlayer
-              videoSource={selectedVideo}
-              onEnd={handleVideoEnd}
-              onPrevious={handleVideoPrevious}
-              autoPlayNext={autoPlayNext}
-              toggleAutoPlayNext={toggleAutoPlayNext}
-            />
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setSelectedVideo(null)}
-            >
-              <Icon name="close" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
-        )}
-      </Modal>
+          {showPlaylist && (
+            <>
+              <View style={styles.playlistContainer}>
+                <FlatList
+                  data={files}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={[
+                        styles.playlistItem,
+                        selectedVideo?.name === item &&
+                          styles.playlistItemActive,
+                      ]}
+                      onPress={() => handleFilePress(item)}
+                    >
+                      <Icon
+                        name="movie"
+                        size={24}
+                        color="#fff"
+                        style={styles.fileIcon}
+                      />
+                      <Text style={styles.playlistItemText} numberOfLines={1}>
+                        {item}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                  keyExtractor={(item) => item}
+                />
+              </View>
+              <TouchableOpacity
+                style={styles.playlistBackground}
+                onPress={togglePlaylist}
+              ></TouchableOpacity>
+            </>
+          )}
+        </View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   fileList: {
-    paddingHorizontal: 20,
-    marginTop: 10,
+    maxHeight: 100,
+    backgroundColor: "rgba(0,0,0,0.8)",
+  },
+  listContent: {
+    padding: 8,
   },
   fileItem: {
-    backgroundColor: "#ffffff",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    width: 150,
+    margin: 5,
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: "rgba(255,255,255,0.1)",
+  },
+  fileContent: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
   },
   fileIcon: {
-    marginRight: 10,
+    marginRight: 12,
   },
   fileName: {
-    fontSize: 16,
-    color: "#333",
-    flex: 1,
+    color: "#fff",
+    fontSize: 12,
+    textAlign: "center",
   },
   loadingContainer: {
     flex: 1,
@@ -189,19 +219,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: "#007bff",
+    marginTop: 12,
+    fontSize: 18,
+    fontWeight: "500",
   },
   emptyStateContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: 32,
   },
   emptyStateText: {
-    fontSize: 18,
-    color: "#888",
-    marginTop: 10,
+    fontSize: 20,
+    fontWeight: "500",
+    marginTop: 16,
+    textAlign: "center",
   },
   modalContainer: {
     flex: 1,
@@ -211,8 +243,45 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 40,
     right: 20,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    borderRadius: 25,
+    padding: 8,
+    zIndex: 1000,
+  },
+
+  playlistContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    bottom: 0,
+    width: "50%",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    borderTopLeftRadius: 15,
+    borderBottomLeftRadius: 15,
     padding: 10,
+  },
+  playlistBackground: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    width: "50%",
+    backgroundColor: "transparent",
+    padding: 10,
+  },
+  playlistItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 5,
+    backgroundColor: "rgba(255,255,255,0.1)",
+  },
+  playlistItemActive: {
+    backgroundColor: "black",
+  },
+  playlistItemText: {
+    color: "#fff",
+    fontSize: 14,
+    flex: 1,
+    marginLeft: 10,
   },
 });

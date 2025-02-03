@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "Bộ Sưu Tập Douyin",
-    "slug": "bo-suu-tap-douyin",
+    "name": "Douyin Collection",
+    "slug": "douyin-collection",
     "version": "1.0.1",
     "orientation": "default",
-    "icon": "./assets/favicon.png",
+    "icon": "./assets/movie.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/movie.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,22 +17,29 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/movie.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": [
-        "INTERNET"
-      ],
-      "package": "com.bosuutap.DouyinCollection"
+      "permissions": ["INTERNET"],
+      "package": "com.expo.douyincollection"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/movie.png"
     },
     "extra": {
       "eas": {
-        "projectId": "a25509bc-9b9c-406e-94c2-7a73b1e11617"
+        "projectId": "05bb547e-98df-475b-95cd-551977cf3f3c"
       }
     },
-    "owner": "bosuutap"
+    "owner": "tonglanhchua",
+    "plugins": [
+      [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": true,
+          "supportsPictureInPicture": true
+        }
+      ]
+    ]
   }
 }
