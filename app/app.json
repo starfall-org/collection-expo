@@ -21,7 +21,7 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": ["INTERNET"],
-      "package": "com.expo.douyincollection"
+      "package": "app.expo.collection"
     },
     "web": {
       "favicon": "./assets/favicon.png"
