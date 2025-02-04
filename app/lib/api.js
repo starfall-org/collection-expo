@@ -1,4 +1,4 @@
-const API_URL = process.env.API_URL;
+const API_URL = "https://collection-backend.deno.dev";
 
 const cache = new Map();
 const cacheExpiry = new Map();
