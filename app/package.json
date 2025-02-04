@@ -18,7 +18,8 @@
     "react-native-web": "~0.19.13",
     "@expo/metro-runtime": "~4.0.1",
     "expo-keep-awake": "~14.0.2",
-    "expo-updates": "~0.26.15"
+    "expo-updates": "~0.26.15",
+    "expo-navigation-bar": "~4.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

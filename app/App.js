@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StatusBar, View } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { useKeepAwake } from "expo-keep-awake";
+import * as NavigationBar from "expo-navigation-bar";
 import { listFiles, getSource } from "./lib/api";
 import Playlist from "./component/Playlist";
 import Controls from "./component/Controls";
@@ -18,6 +19,15 @@ export default function App() {
     player.showNowPlayingNotification = true;
     player.staysActiveInBackground = true;
   });
+
+  useEffect(() => {
+    const setNavigationBar = async () => {
+      await NavigationBar.setBackgroundColorAsync("#000000");
+      await NavigationBar.setButtonStyleAsync("dark");
+    };
+
+    setNavigationBar();
+  }, []);
 
   useEffect(() => {
     (async () => {
