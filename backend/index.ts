@@ -9,10 +9,10 @@ import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 const BUCKET_NAME = "bosuutap";
 
 const s3Client = new S3Client({
-  endpoint: "https://q0w7.sg.idrivee2-43.com",
+  endpoint: Deno.env.get("ENDPOINT"),
   credentials: {
-    accessKeyId: "8OBl9ve6KBiLAdnIReel",
-    secretAccessKey: "RwoILuzZVKcRhtFfvXFSZqf6vHkPeF5eeWYvviy5",
+    accessKeyId: Deno.env.get("ACCESS_KEY_ID"),
+    secretAccessKey: Deno.env.get("SECRET_ACCESS_KEY"),
   },
   forcePathStyle: true,
   region: "ap-southeast-1",
@@ -60,7 +60,7 @@ async function handler(req: Request): Promise<Response> {
       );
       const command = new GetObjectCommand({
         Bucket: BUCKET_NAME,
-        Key: fileName
+        Key: fileName,
       });
 
       const presignedUrl = await getSignedUrl(s3Client, command, {
