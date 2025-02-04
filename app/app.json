@@ -4,11 +4,11 @@
     "slug": "douyin-collection",
     "version": "1.0.1",
     "orientation": "default",
-    "icon": "./assets/movie.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/movie.png",
+      "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,14 +17,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/movie.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": ["INTERNET"],
       "package": "com.expo.douyincollection"
     },
     "web": {
-      "favicon": "./assets/movie.png"
+      "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {

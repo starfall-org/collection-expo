@@ -1,0 +1,144 @@
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  StyleSheet,
+} from "react-native";
+import { useEvent, useEventListener } from "expo";
+import { Ionicons } from "@expo/vector-icons";
+
+export default function Controls({
+  player,
+  files,
+  selectedVideo,
+  handleSelect,
+  isShowList,
+  setShowList,
+}) {
+  const [isVisible, setIsVisible] = useState(true);
+  const [isEnded, setIsEnded] = useState(false);
+
+  const { isPlaying } = useEvent(player, "playingChange", {
+    isPlaying: player.playing,
+  });
+
+  useEventListener(player, "playToEnd", () => {
+    setIsEnded(true);
+    onNext();
+  });
+
+  useEventListener(player, "statusChange", ({ status, error }) => {
+    if (status === "readyToPlay") {
+      setIsEnded(false);
+      player.play();
+    }
+    if (error) {
+      console.error("Error playing video:", error);
+    }
+  });
+
+  useEffect(() => {
+    if (isVisible) {
+      const timer = setTimeout(
+        () => {
+          setIsVisible(false);
+        },
+        isPlaying ? 2000 : 5000
+      );
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible, isEnded, isPlaying]);
+
+  const onPlayPause = () => {
+    if (isPlaying) {
+      player.pause();
+    } else {
+      if (isEnded) {
+        player.replay();
+      } else {
+        player.play();
+      }
+    }
+  };
+
+  const onPrevios = () => {
+    const currentIndex = files.indexOf(selectedVideo?.name);
+    if (currentIndex > 0) {
+      handleSelect(files[currentIndex - 1]);
+    }
+  };
+
+  const onNext = () => {
+    const currentIndex = files.indexOf(selectedVideo?.name);
+    if (currentIndex < files.length - 1) {
+      handleSelect(files[currentIndex + 1]);
+    }
+  };
+
+  const handlePress = () => {
+    setIsVisible(!isVisible);
+  };
+
+  if (!isVisible) {
+    return (
+      <TouchableWithoutFeedback onPress={handlePress}>
+        <View style={styles.container} />
+      </TouchableWithoutFeedback>
+    );
+  }
+
+  return (
+    <TouchableWithoutFeedback onPress={handlePress}>
+      <View style={styles.container}>
+        <View style={styles.controlsContainer}>
+          <TouchableOpacity onPress={setShowList}>
+            <Ionicons
+              name={isShowList ? "list-circle" : "list-circle-outline"}
+              size={30}
+              color="#fff"
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onPrevios}>
+            <Ionicons name="play-skip-back-circle" size={30} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onPlayPause}>
+            <Ionicons
+              name={
+                isEnded
+                  ? "refresh-circle"
+                  : isPlaying
+                  ? "pause-circle"
+                  : "play-circle"
+              }
+              size={30}
+              color="#fff"
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onNext}>
+            <Ionicons name="play-skip-forward-circle" size={30} color="#fff" />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </TouchableWithoutFeedback>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "flex-end",
+  },
+  controlsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    width: "100%",
+    backgroundColor: "rgba(0,0,0,0.2)",
+    paddingVertical: 20,
+  },
+});
