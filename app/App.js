@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StatusBar, Text, View } from "react-native";
+import { StatusBar, View } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { useKeepAwake } from "expo-keep-awake";
 import { listFiles, getSource } from "./lib/api";
