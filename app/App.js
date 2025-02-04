@@ -49,7 +49,7 @@ export default function App() {
   };
 
   const exitAppHandler = () => {
-    player.stop();
+    player.pause();
   };
 
   return (

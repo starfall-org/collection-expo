@@ -10,8 +10,8 @@ export default function Config({ exitAppHandler }) {
     const currentTime = Date.now();
     const timeDiff = currentTime - lastBackPress;
     if (timeDiff < 2000) {
-      BackHandler.exitApp();
       exitAppHandler();
+      BackHandler.exitApp();
       return true;
     } else {
       setLastBackPress(currentTime);
