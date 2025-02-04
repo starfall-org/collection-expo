@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar, Text, View } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
+import { useKeepAwake } from "expo-keep-awake";
 import { listFiles, getSource } from "./lib/api";
 import Playlist from "./component/Playlist";
 import Controls from "./component/Controls";
 import { styles } from "./style";
 
 export default function App() {
+  useKeepAwake();
+
   const [files, setFiles] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [showPlaylist, setShowPlaylist] = useState(false);
