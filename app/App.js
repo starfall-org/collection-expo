@@ -7,6 +7,8 @@ import Controls from "./component/Controls";
 import Config from "./component/Config";
 import { styles } from "./style";
 
+const cache = new Map();
+
 export default function App() {
   const [files, setFiles] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -22,7 +24,12 @@ export default function App() {
       const files = await listFiles();
       setFiles(files);
       if (files.length > 0) {
-        handleSelect(files[0]);
+        const cachedSelectedVideo = cache.get("selectedVideo");
+        if (cachedSelectedVideo) {
+          handleSelect(cachedSelectedVideo);
+        } else {
+          handleSelect(files[0]);
+        }
       }
     })();
   }, []);
@@ -31,6 +38,7 @@ export default function App() {
     try {
       const pUrl = await getSource(fileName);
       if (pUrl) {
+        cache.set("selectedVideo", fileName);
         setSelectedVideo({ uri: pUrl, name: fileName });
         player.replace(pUrl);
       }
@@ -40,9 +48,13 @@ export default function App() {
     }
   };
 
+  const exitAppHandler = () => {
+    player.stop();
+  };
+
   return (
     <View style={styles.container}>
-      <Config />
+      <Config exitAppHandler={exitAppHandler} />
       <View style={styles.content}>
         {selectedVideo && (
           <View style={styles.videoContainer}>
