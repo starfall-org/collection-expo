@@ -44,7 +44,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle={"light-content"} />
+      <StatusBar barStyle={"default"} backgroundColor={"black"} />
       <View style={styles.content}>
         {selectedVideo && (
           <View style={styles.videoContainer}>
