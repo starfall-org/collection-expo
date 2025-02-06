@@ -2,10 +2,11 @@ import {
   View,
   Text,
   TouchableOpacity,
-  FlatList,
+  ScrollView,
   StyleSheet,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useRef, useState, useEffect } from "react";
 
 export default function Playlist({
   files,
@@ -13,13 +14,29 @@ export default function Playlist({
   handleSelect,
   closePlaylist,
 }) {
+  const scrollViewRef = useRef(null);
+  const [layout, setLayout] = useState(null);
+
+  const handleLayout = (event) => {
+    const { height } = event.nativeEvent.layout;
+    setLayout(height);
+  };
+
+  useEffect(() => {
+    const index = files.indexOf(selectedVideo?.name) || 1;
+    const offset = index * layout;
+
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ x: 0, y: offset, animated: true });
+    }
+  }, [selectedVideo, layout]);
   return (
     <>
       <View style={styles.container}>
-        <FlatList
-          data={files}
-          renderItem={({ item }) => (
+        <ScrollView ref={scrollViewRef}>
+          {files.map((item, index) => (
             <TouchableOpacity
+              key={index}
               style={[
                 styles.itemContainer,
                 selectedVideo?.name === item
@@ -27,6 +44,7 @@ export default function Playlist({
                   : styles.normalItem,
               ]}
               onPress={() => handleSelect(item)}
+              onLayout={handleLayout}
             >
               <Ionicons
                 name={selectedVideo?.name === item ? "checkmark" : "play"}
@@ -37,9 +55,8 @@ export default function Playlist({
                 {item}
               </Text>
             </TouchableOpacity>
-          )}
-          keyExtractor={(item) => item}
-        />
+          ))}
+        </ScrollView>
       </View>
       <TouchableOpacity
         style={styles.closeButton}

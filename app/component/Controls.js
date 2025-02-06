@@ -18,14 +18,8 @@ export default function Controls({
 }) {
   const [isVisible, setIsVisible] = useState(true);
   const [isEnded, setIsEnded] = useState(false);
-
   const { isPlaying } = useEvent(player, "playingChange", {
     isPlaying: player.playing,
-  });
-
-  useEventListener(player, "playToEnd", () => {
-    setIsEnded(true);
-    onNext();
   });
 
   useEventListener(player, "statusChange", ({ status, error }) => {
@@ -36,6 +30,11 @@ export default function Controls({
     if (error) {
       console.error("Error playing video:", error);
     }
+  });
+
+  useEventListener(player, "playToEnd", () => {
+    setIsEnded(true);
+    onNext();
   });
 
   useEffect(() => {
@@ -88,7 +87,7 @@ export default function Controls({
     );
   }
 
-  return (
+  const Content = () => (
     <TouchableWithoutFeedback onPress={handlePress}>
       <View style={styles.container}>
         <View style={styles.controlsContainer}>
@@ -122,6 +121,7 @@ export default function Controls({
       </View>
     </TouchableWithoutFeedback>
   );
+  return <>{isShowList ? null : <Content />}</>;
 }
 
 const styles = StyleSheet.create({

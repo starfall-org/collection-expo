@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { listFiles, getSource } from "./lib/api";
 import Playlist from "./component/Playlist";
 import Controls from "./component/Controls";
 import Config from "./component/Config";
 import { styles } from "./style";
-
-const cache = new Map();
 
 export default function App() {
   const [files, setFiles] = useState([]);
@@ -24,7 +23,7 @@ export default function App() {
       const files = await listFiles();
       setFiles(files);
       if (files.length > 0) {
-        const cachedSelectedVideo = cache.get("selectedVideo");
+        const cachedSelectedVideo = await AsyncStorage.getItem("selectedVideo");
         if (cachedSelectedVideo) {
           handleSelect(cachedSelectedVideo);
         } else {
@@ -38,11 +37,10 @@ export default function App() {
     try {
       const pUrl = await getSource(fileName);
       if (pUrl) {
-        cache.set("selectedVideo", fileName);
+        await AsyncStorage.setItem("selectedVideo", fileName);
         setSelectedVideo({ uri: pUrl, name: fileName });
         player.replace(pUrl);
       }
-      setShowPlaylist(false);
     } catch (error) {
       console.error("Error opening file:", error);
     }
@@ -65,23 +63,23 @@ export default function App() {
             />
           </View>
         )}
-        {showPlaylist ? (
+        {showPlaylist && (
           <Playlist
             files={files}
             selectedVideo={selectedVideo}
             handleSelect={handleSelect}
             closePlaylist={() => setShowPlaylist(false)}
           />
-        ) : (
-          <Controls
-            player={player}
-            files={files}
-            selectedVideo={selectedVideo}
-            handleSelect={handleSelect}
-            isShowList={showPlaylist}
-            setShowList={setShowPlaylist}
-          />
         )}
+
+        <Controls
+          player={player}
+          files={files}
+          selectedVideo={selectedVideo}
+          handleSelect={handleSelect}
+          isShowList={showPlaylist}
+          setShowList={() => setShowPlaylist(!showPlaylist)}
+        />
       </View>
     </View>
   );
