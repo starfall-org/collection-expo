@@ -29,7 +29,7 @@ export default function Playlist({
     if (scrollViewRef.current) {
       scrollViewRef.current.scrollTo({ x: 0, y: offset, animated: true });
     }
-  }, [selectedVideo, layout]);
+  }, [scrollViewRef.current]);
   return (
     <>
       <View style={styles.container}>
