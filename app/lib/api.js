@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL = "https://collection-backend.deno.dev";
+const API_URL = "https://api.flaring.workers.dev";
 const CACHE_DURATION = 60 * 60 * 1000;
 
 const getCachedData = async (key) => {
