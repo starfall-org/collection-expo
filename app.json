@@ -4,16 +4,16 @@
     "slug": "collection",
     "version": "1.2.0",
     "orientation": "default",
-    "icon": "./assets/Icon.jpeg",
+    "icon": "./assets/Icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/Splash.jpeg",
+      "image": "./assets/Splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "notification": {
-      "icon": "./assets/Icon.jpeg",
+      "icon": "./assets/Icon.png",
       "androidMode": "default"
     },
     "ios": {
@@ -22,7 +22,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/Splash.jpeg",
+        "foregroundImage": "./assets/Icon.png",
         "backgroundColor": "#000000"
       },
       "permissions": [
@@ -34,11 +34,11 @@
       "package": "app.expo.collection"
     },
     "web": {
-      "favicon": "./assets/Icon.jpeg"
+      "favicon": "./assets/Icon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "05bb547e-98df-475b-95cd-551977cf3f3c"
+        "projectId": "b8738a53-bc97-42d4-96d1-00d7e3ab730e"
       }
     },
     "owner": "tonglanhchua",
