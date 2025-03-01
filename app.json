@@ -17,7 +17,8 @@
       "androidMode": "default"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "app.expo.collection"
     },
     "android": {
       "adaptiveIcon": {
