@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Douyin Collection",
-    "slug": "douyin-collection",
-    "version": "1.1.3",
+    "name": "Collection",
+    "slug": "collection",
+    "version": "1.2.0",
     "orientation": "default",
     "icon": "./assets/Icon.jpeg",
     "userInterfaceStyle": "light",
@@ -22,8 +22,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/Icon.jpeg",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/Splash.jpeg",
+        "backgroundColor": "#000000"
       },
       "permissions": [
         "INTERNET",

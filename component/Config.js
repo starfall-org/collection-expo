@@ -35,6 +35,7 @@ export default function Config({ exitAppHandler }) {
     const setNavigationBar = async () => {
       await NavigationBar.setBackgroundColorAsync("#000000");
       await NavigationBar.setButtonStyleAsync("dark");
+      await NavigationBar.setVisibilityAsync("hidden");
     };
 
     setNavigationBar();
@@ -42,5 +43,5 @@ export default function Config({ exitAppHandler }) {
 
   useKeepAwake();
 
-  return <StatusBar barStyle={"default"} backgroundColor={"black"} />;
+  return <StatusBar barStyle={"default"} backgroundColor={"black"} hidden />;
 }
