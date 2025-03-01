@@ -1,9 +1,3 @@
-# Run API
-```bash
-npm i -g wrangler
-wrangler deploy
-```
-
 # Build APP
 
 ```
