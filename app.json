@@ -9,8 +9,8 @@
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/Splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
     },
     "notification": {
       "icon": "./assets/Icon.png",
@@ -27,15 +27,20 @@
       },
       "permissions": [
         "android.permission.INTERNET",
-        "android.permission.NOTIFICATIONS",
-        "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.INTERNET",
-        "android.permission.NOTIFICATIONS",
-        "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.WRITE_EXTERNAL_STORAGE"
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.POST_NOTIFICATIONS"
       ],
-      "package": "app.expo.collection"
+      "package": "app.expo.collection",
+      "splash": {
+        "image": "./assets/Splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#000000",
+        "mdpi": "./assets/Splash.png",
+        "hdpi": "./assets/Splash.png",
+        "xhdpi": "./assets/Splash.png",
+        "xxhdpi": "./assets/Splash.png",
+        "xxxhdpi": "./assets/Splash.png"
+      }
     },
     "web": {
       "favicon": "./assets/Icon.png"
