@@ -6,6 +6,7 @@ import { listFiles, getSource } from "./lib/api";
 import Playlist from "./component/Playlist";
 import Controls from "./component/Controls";
 import Config from "./component/Config";
+import Updater from "./component/Updater";
 import { styles } from "./style";
 
 export default function App() {
@@ -52,6 +53,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      <Updater />
       <Config exitAppHandler={exitAppHandler} />
       <View style={styles.content}>
         {selectedVideo && (
