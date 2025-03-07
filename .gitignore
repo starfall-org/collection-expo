@@ -1,2 +1,3 @@
-**/.codesandbox
-**/.devcontainer
+**/.expo
+**/dist
+**/node_modules

@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "dbaeumer.vscode-eslint",
+        "sourcegraph.cody-ai",
+        "esbenp.prettier-vscode",
+        "msjsdiag.vscode-react-native"
+    ]
+}
