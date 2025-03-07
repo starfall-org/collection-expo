@@ -3,6 +3,7 @@ import { View, Dimensions, StyleSheet } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
+import { useKeepAwake } from "expo-keep-awake";
 import { listFiles, getSource } from "./lib/api";
 import Playlist from "./component/Playlist";
 import Controls from "./component/Controls";
@@ -10,6 +11,7 @@ import Controls from "./component/Controls";
 const { width, height } = Dimensions.get("screen");
 
 export default function App() {
+  useKeepAwake();
   const [files, setFiles] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [showPlaylist, setShowPlaylist] = useState(false);
