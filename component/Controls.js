@@ -32,6 +32,12 @@ export default function Controls({
       setIsEnded(false);
       player.play();
     }
+
+    if (status === "sourceChange") {
+      setIsEnded(false);
+      player.replay();
+    }
+
     if (error) {
       ToastAndroid.show(`Error: ${error}`, ToastAndroid.SHORT);
       console.error("Error playing video:", error);
@@ -39,13 +45,26 @@ export default function Controls({
   });
 
   useEventListener(player, "playToEnd", () => {
-    setIsEnded(true);
-    onNext();
+    setTimeout(() => {
+      setIsEnded(true);
+      onNext();
+    }, 800);
   });
 
   useEffect(() => {
     if (isVisible) {
-      fadeIn();
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start();
       const timer = setTimeout(
         () => {
           fadeOut();
@@ -68,7 +87,7 @@ export default function Controls({
         duration: 300,
         useNativeDriver: true,
       }),
-    ]).start(!isVisible ? () => setIsVisible(true) : null);
+    ]).start(() => setIsVisible(true));
   };
 
   const fadeOut = () => {
@@ -113,9 +132,9 @@ export default function Controls({
   };
 
   const onReloadSource = async () => {
-    const uri = await reloadSource(selectedVideo.name);
-    if (uri) {
-      player.setSource({ uri });
+    const statusOk = await reloadSource(selectedVideo.name);
+    if (statusOk) {
+      handleSelect(selectedVideo.name);
     }
   };
 
@@ -174,7 +193,7 @@ export default function Controls({
             <Ionicons name="play-skip-forward-circle" size={30} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity onPress={onReloadSource}>
-            <Ionicons name="reload-circle" size={30} color="#fff" />
+            <Ionicons name="cloud-download" size={30} color="#fff" />
           </TouchableOpacity>
         </View>
       </Animated.View>
