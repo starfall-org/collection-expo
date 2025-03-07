@@ -47,7 +47,6 @@ export default function Controls({
       fadeIn();
       const timer = setTimeout(
         () => {
-          setIsVisible(false);
           fadeOut();
         },
         isPlaying ? 2000 : 5000
@@ -68,7 +67,7 @@ export default function Controls({
         duration: 300,
         useNativeDriver: true,
       }),
-    ]).start();
+    ]).start(() => setIsVisible(true));
   };
 
   const fadeOut = () => {
@@ -83,7 +82,7 @@ export default function Controls({
         duration: 300,
         useNativeDriver: true,
       }),
-    ]).start();
+    ]).start(() => setIsVisible(false));
   };
 
   const onPlayPause = () => {
@@ -113,7 +112,6 @@ export default function Controls({
   };
 
   const handlePress = () => {
-    setIsVisible(!isVisible);
     if (isVisible) {
       fadeOut();
     } else {
