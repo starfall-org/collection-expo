@@ -44,20 +44,10 @@ export default function Controls({
 
   useEffect(() => {
     if (isVisible) {
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-      ]).start();
+      fadeIn();
       const timer = setTimeout(
         () => {
+          setIsVisible(false);
           fadeOut();
         },
         isPlaying ? 2000 : 5000
@@ -65,6 +55,21 @@ export default function Controls({
       return () => clearTimeout(timer);
     }
   }, [isVisible, isEnded, isPlaying]);
+
+  const fadeIn = () => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
 
   const fadeOut = () => {
     Animated.parallel([
@@ -78,7 +83,7 @@ export default function Controls({
         duration: 300,
         useNativeDriver: true,
       }),
-    ]).start(() => setIsVisible(false));
+    ]).start();
   };
 
   const onPlayPause = () => {
@@ -109,6 +114,11 @@ export default function Controls({
 
   const handlePress = () => {
     setIsVisible(!isVisible);
+    if (isVisible) {
+      fadeOut();
+    } else {
+      fadeIn();
+    }
   };
 
   if (!isVisible) {
