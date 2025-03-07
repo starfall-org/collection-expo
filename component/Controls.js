@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { useEvent, useEventListener } from "expo";
 import { Ionicons } from "@expo/vector-icons";
+import { reloadSource } from "../lib/api";
 
 export default function Controls({
   player,
@@ -67,7 +68,7 @@ export default function Controls({
         duration: 300,
         useNativeDriver: true,
       }),
-    ]).start(() => setIsVisible(true));
+    ]).start(!isVisible ? () => setIsVisible(true) : null);
   };
 
   const fadeOut = () => {
@@ -108,6 +109,13 @@ export default function Controls({
     const currentIndex = files.indexOf(selectedVideo?.name);
     if (currentIndex < files.length - 1) {
       handleSelect(files[currentIndex + 1]);
+    }
+  };
+
+  const onReloadSource = async () => {
+    const uri = await reloadSource(selectedVideo.name);
+    if (uri) {
+      player.setSource({ uri });
     }
   };
 
@@ -164,6 +172,9 @@ export default function Controls({
           </TouchableOpacity>
           <TouchableOpacity onPress={onNext}>
             <Ionicons name="play-skip-forward-circle" size={30} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onReloadSource}>
+            <Ionicons name="reload-circle" size={30} color="#fff" />
           </TouchableOpacity>
         </View>
       </Animated.View>
