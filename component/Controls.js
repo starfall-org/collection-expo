@@ -33,14 +33,20 @@ export default function Controls({
       player.play();
     }
 
-    if (status === "sourceChange") {
-      setIsEnded(false);
-      player.replay();
-    }
-
     if (error) {
       ToastAndroid.show(`Error: ${error}`, ToastAndroid.SHORT);
       console.error("Error playing video:", error);
+    }
+  });
+
+  useEventListener(player, "sourceChange", ({ source }) => {
+    if (isEnded) {
+      setIsEnded(false);
+    }
+    if (isPlaying) {
+      player.replay();
+    } else {
+      player.play();
     }
   });
 
