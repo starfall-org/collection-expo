@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View } from "react-native";
+import { View, Dimensions, StyleSheet } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { listFiles, getSource } from "./lib/api";
 import Playlist from "./component/Playlist";
 import Controls from "./component/Controls";
-import Config from "./component/Config";
-import Updater from "./component/Updater";
-import { styles } from "./style";
+import { navConfig } from "./lib/navconfig";
+import { checkUpdate } from "./lib/update";
+import { StatusBar } from "expo-status-bar";
+
+const { width, height } = Dimensions.get("screen");
 
 export default function App() {
   const [files, setFiles] = useState([]);
@@ -20,6 +22,8 @@ export default function App() {
   });
 
   useEffect(() => {
+    checkUpdate();
+    navConfig(exitAppHandler);
     (async () => {
       const files = await listFiles();
       setFiles(files);
@@ -53,8 +57,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Updater />
-      <Config exitAppHandler={exitAppHandler} />
+      <StatusBar barStyle={"default"} backgroundColor={"black"} hidden />
       <View style={styles.content}>
         {selectedVideo && (
           <View style={styles.videoContainer}>
@@ -86,3 +89,32 @@ export default function App() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "black",
+  },
+  content: {
+    flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
+  },
+  loadingText: {
+    color: "white",
+    fontSize: 18,
+  },
+  videoContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  video: {
+    width: width,
+    height: height,
+  },
+});
