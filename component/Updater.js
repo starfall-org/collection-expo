@@ -1,6 +1,7 @@
 import { View, Button, Text } from "react-native";
 import * as Updates from "expo-updates";
 import { useEffect, useState } from "react";
+import { ToastAndroid } from "react-native";
 
 export default function Updater() {
   const [updating, setUpdating] = useState(false);
@@ -10,11 +11,17 @@ export default function Updater() {
 
       if (update.isAvailable) {
         setUpdating(true);
+        ToastAndroid.show("Updating...", ToastAndroid.SHORT);
         await Updates.fetchUpdateAsync();
         setUpdating(false);
+        ToastAndroid.show("Update completed", ToastAndroid.SHORT);
         await Updates.reloadAsync();
       }
     } catch (error) {
+      ToastAndroid.show(
+        `Error fetching latest Expo update: ${error}`,
+        ToastAndroid.SHORT
+      );
       alert(`Error fetching latest Expo update: ${error}`);
     }
   }
