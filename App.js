@@ -18,7 +18,6 @@ export default function App() {
 
   const player = useVideoPlayer(selectedVideo?.uri, (player) => {
     player.showNowPlayingNotification = true;
-    player.staysActiveInBackground = true;
   });
 
   useEffect(() => {

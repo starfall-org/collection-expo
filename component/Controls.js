@@ -31,14 +31,12 @@ export default function Controls({
     if (status === "readyToPlay") {
       setIsEnded(false);
       player.play();
-    } else {
-      ToastAndroid.show(`Status: ${status}`, ToastAndroid.SHORT);
     }
   });
 
   useEventListener(player, "playToEnd", () => {
+    setIsEnded(true);
     setTimeout(() => {
-      setIsEnded(true);
       onNext();
     }, 800);
   });
