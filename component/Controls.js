@@ -20,6 +20,7 @@ export default function Controls({
   const [isVisible, setIsVisible] = useState(true);
   const [isEnded, setIsEnded] = useState(false);
   const fadeAnim = useState(new Animated.Value(1))[0];
+  const slideAnim = useState(new Animated.Value(0))[0];
   const { isPlaying } = useEvent(player, "playingChange", {
     isPlaying: player.playing,
   });
@@ -41,11 +42,18 @@ export default function Controls({
 
   useEffect(() => {
     if (isVisible) {
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start();
       const timer = setTimeout(
         () => {
           fadeOut();
@@ -57,11 +65,18 @@ export default function Controls({
   }, [isVisible, isEnded, isPlaying]);
 
   const fadeOut = () => {
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start(() => setIsVisible(false));
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 100,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start(() => setIsVisible(false));
   };
 
   const onPlayPause = () => {
@@ -104,7 +119,15 @@ export default function Controls({
 
   const Content = () => (
     <TouchableWithoutFeedback onPress={handlePress}>
-      <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+      <Animated.View
+        style={[
+          styles.container,
+          {
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }],
+          },
+        ]}
+      >
         <View style={styles.controlsContainer}>
           <TouchableOpacity onPress={setShowList}>
             <Ionicons

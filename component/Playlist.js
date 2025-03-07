@@ -1,5 +1,4 @@
 import {
-  View,
   Text,
   TouchableOpacity,
   ScrollView,
@@ -39,6 +38,16 @@ export default function Playlist({
       scrollViewRef.current.scrollTo({ x: 0, y: offset, animated: true });
     }
   }, [scrollViewRef.current]);
+
+  const handleClose = () => {
+    Animated.spring(slideAnim, {
+      toValue: -300,
+      useNativeDriver: true,
+    }).start(() => {
+      closePlaylist();
+    });
+  };
+
   return (
     <>
       <Animated.View
@@ -71,7 +80,7 @@ export default function Playlist({
       </Animated.View>
       <TouchableOpacity
         style={styles.closeButton}
-        onPress={closePlaylist}
+        onPress={handleClose}
       ></TouchableOpacity>
     </>
   );
