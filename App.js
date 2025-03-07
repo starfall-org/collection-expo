@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { View, Dimensions, StyleSheet } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StatusBar } from "expo-status-bar";
 import { listFiles, getSource } from "./lib/api";
 import Playlist from "./component/Playlist";
 import Controls from "./component/Controls";
-import { navConfig } from "./lib/navconfig";
-import { checkUpdate } from "./lib/update";
-import { StatusBar } from "expo-status-bar";
+import { useConfig } from "./hook/useConfig";
+import checkUpdate from "./lib/update";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -23,7 +23,6 @@ export default function App() {
 
   useEffect(() => {
     checkUpdate();
-    navConfig(exitAppHandler);
     (async () => {
       const files = await listFiles();
       setFiles(files);
@@ -54,7 +53,7 @@ export default function App() {
   const exitAppHandler = () => {
     player.pause();
   };
-
+  useConfig(exitAppHandler);
   return (
     <View style={styles.container}>
       <StatusBar barStyle={"default"} backgroundColor={"black"} hidden />
