@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
+  Animated,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRef, useState, useEffect } from "react";
@@ -16,11 +17,19 @@ export default function Playlist({
 }) {
   const scrollViewRef = useRef(null);
   const [layout, setLayout] = useState(null);
+  const slideAnim = useRef(new Animated.Value(-300)).current;
 
   const handleLayout = (event) => {
     const { height } = event.nativeEvent.layout;
     setLayout(height);
   };
+
+  useEffect(() => {
+    Animated.spring(slideAnim, {
+      toValue: 0,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   useEffect(() => {
     const index = files.indexOf(selectedVideo?.name) || 1;
@@ -32,7 +41,9 @@ export default function Playlist({
   }, [scrollViewRef.current]);
   return (
     <>
-      <View style={styles.container}>
+      <Animated.View
+        style={[styles.container, { transform: [{ translateX: slideAnim }] }]}
+      >
         <ScrollView ref={scrollViewRef}>
           {files.map((item, index) => (
             <TouchableOpacity
@@ -57,7 +68,7 @@ export default function Playlist({
             </TouchableOpacity>
           ))}
         </ScrollView>
-      </View>
+      </Animated.View>
       <TouchableOpacity
         style={styles.closeButton}
         onPress={closePlaylist}

@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   StyleSheet,
+  Animated,
 } from "react-native";
 import { useEvent, useEventListener } from "expo";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,6 +19,7 @@ export default function Controls({
 }) {
   const [isVisible, setIsVisible] = useState(true);
   const [isEnded, setIsEnded] = useState(false);
+  const fadeAnim = useState(new Animated.Value(1))[0];
   const { isPlaying } = useEvent(player, "playingChange", {
     isPlaying: player.playing,
   });
@@ -39,15 +41,28 @@ export default function Controls({
 
   useEffect(() => {
     if (isVisible) {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
       const timer = setTimeout(
         () => {
-          setIsVisible(false);
+          fadeOut();
         },
         isPlaying ? 2000 : 5000
       );
       return () => clearTimeout(timer);
     }
   }, [isVisible, isEnded, isPlaying]);
+
+  const fadeOut = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => setIsVisible(false));
+  };
 
   const onPlayPause = () => {
     if (isPlaying) {
@@ -89,7 +104,7 @@ export default function Controls({
 
   const Content = () => (
     <TouchableWithoutFeedback onPress={handlePress}>
-      <View style={styles.container}>
+      <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
         <View style={styles.controlsContainer}>
           <TouchableOpacity onPress={setShowList}>
             <Ionicons
@@ -118,7 +133,7 @@ export default function Controls({
             <Ionicons name="play-skip-forward-circle" size={30} color="#fff" />
           </TouchableOpacity>
         </View>
-      </View>
+      </Animated.View>
     </TouchableWithoutFeedback>
   );
   return <>{isShowList ? null : <Content />}</>;
