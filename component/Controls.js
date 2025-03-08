@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  StyleSheet,
-} from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { useEvent, useEventListener } from "expo";
 import { Ionicons } from "@expo/vector-icons";
 import { reloadSource } from "../lib/api";
@@ -68,7 +63,7 @@ export default function Controls({
   };
 
   const Content = () => (
-    <View>
+    <View style={styles.container}>
       <View style={styles.controlsContainer}>
         <TouchableOpacity onPress={setShowList}>
           <Ionicons name="list" size={30} color="#fff" />
@@ -98,16 +93,7 @@ export default function Controls({
       </View>
     </View>
   );
-  return (
-    <>
-      {" "}
-      {isShowList ? null : (
-        <TouchableWithoutFeedback>
-          <Content />
-        </TouchableWithoutFeedback>
-      )}
-    </>
-  );
+  return <> {isShowList ? null : <Content />}</>;
 }
 
 const styles = StyleSheet.create({
