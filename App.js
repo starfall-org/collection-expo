@@ -30,7 +30,7 @@ export default function App() {
         if (cachedSelectedVideo) {
           handleSelect(cachedSelectedVideo);
         } else {
-          handleSelect(files[0]);
+          handleSelect(files[0].name);
         }
       }
     })();
