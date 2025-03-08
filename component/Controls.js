@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   View,
   TouchableOpacity,
@@ -18,8 +18,8 @@ export default function Controls({
   isShowList,
   setShowList,
 }) {
-  const [isVisible, setIsVisible] = useState(true);
-  const [isEnded, setIsEnded] = useState(false);
+  const visibleRef = useRef(true);
+  const endedRef = useRef(false);
   const fadeAnim = useState(new Animated.Value(1))[0];
   const slideAnim = useState(new Animated.Value(0))[0];
   const { isPlaying } = useEvent(player, "playingChange", {
@@ -28,41 +28,17 @@ export default function Controls({
 
   useEventListener(player, "statusChange", ({ status }) => {
     if (status === "readyToPlay") {
-      setIsEnded(false);
+      endedRef.current = false;
       player.play();
     }
   });
 
   useEventListener(player, "playToEnd", () => {
-    setIsEnded(true);
+    endedRef.current = true;
     setTimeout(() => {
       onNext();
     }, 800);
   });
-
-  useEffect(() => {
-    if (isVisible) {
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-      ]).start();
-      const timer = setTimeout(
-        () => {
-          fadeOut();
-        },
-        isPlaying ? 2000 : 5000
-      );
-      return () => clearTimeout(timer);
-    }
-  }, [isVisible, isEnded, isPlaying]);
 
   const fadeIn = () => {
     Animated.parallel([
@@ -76,7 +52,7 @@ export default function Controls({
         duration: 300,
         useNativeDriver: true,
       }),
-    ]).start(() => setIsVisible(true));
+    ]).start(() => (visibleRef.current = true));
   };
 
   const fadeOut = () => {
@@ -91,14 +67,14 @@ export default function Controls({
         duration: 300,
         useNativeDriver: true,
       }),
-    ]).start(() => setIsVisible(false));
+    ]).start(() => (visibleRef.current = false));
   };
 
   const onPlayPause = () => {
     if (isPlaying) {
       player.pause();
     } else {
-      if (isEnded) {
+      if (endedRef.current) {
         player.replay();
       } else {
         player.play();
@@ -128,7 +104,7 @@ export default function Controls({
   };
 
   const handlePress = () => {
-    if (isVisible) {
+    if (visibleRef.current) {
       fadeOut();
     } else {
       fadeIn();
@@ -164,7 +140,7 @@ export default function Controls({
           <TouchableOpacity onPress={onPlayPause}>
             <Ionicons
               name={
-                isEnded
+                endedRef.current
                   ? "play-circle-sharp"
                   : isPlaying
                   ? "pause-circle"
