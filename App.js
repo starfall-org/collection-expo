@@ -51,7 +51,7 @@ export default function App() {
     <View style={styles.container}>
       <StatusBar barStyle={"default"} backgroundColor={"black"} hidden />
       <View style={styles.content}>
-        {selectedVideo && (
+        {sourceRef.current && (
           <View style={styles.videoContainer}>
             <VideoView
               style={styles.video}
@@ -63,7 +63,7 @@ export default function App() {
         {showPlaylist && (
           <Playlist
             files={files}
-            selectedVideo={selectedVideo}
+            selectedVideo={sourceRef.current}
             handleSelect={handleSelect}
             closePlaylist={() => setShowPlaylist(false)}
           />
@@ -72,7 +72,7 @@ export default function App() {
         <Controls
           player={player}
           files={files}
-          selectedVideo={selectedVideo}
+          selectedVideo={sourceRef.current}
           handleSelect={handleSelect}
           isShowList={showPlaylist}
           setShowList={() => setShowPlaylist(!showPlaylist)}
