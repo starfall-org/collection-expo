@@ -70,7 +70,7 @@ export default function App() {
         {showPlaylist && (
           <Playlist
             files={files}
-            selectedVideo={sourceRef.current}
+            selectedFile={selectedFile}
             handleSelect={handleSelect}
             closePlaylist={() => setShowPlaylist(false)}
           />
@@ -79,7 +79,7 @@ export default function App() {
         <Controls
           player={player}
           files={files}
-          selectedVideo={sourceRef.current}
+          selectedFile={selectedFile}
           handleSelect={handleSelect}
           isShowList={showPlaylist}
           setShowList={() => setShowPlaylist(!showPlaylist)}

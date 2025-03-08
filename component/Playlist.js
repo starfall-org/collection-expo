@@ -10,7 +10,7 @@ import { useRef, useState, useEffect } from "react";
 
 export default function Playlist({
   files,
-  selectedVideo,
+  selectedFile,
   handleSelect,
   closePlaylist,
 }) {
@@ -31,7 +31,7 @@ export default function Playlist({
   }, []);
 
   useEffect(() => {
-    const index = files.indexOf(selectedVideo?.name) || 1;
+    const index = files.indexOf(selectedFile) || 1;
     const offset = index * layout;
 
     if (scrollViewRef.current) {
@@ -59,15 +59,13 @@ export default function Playlist({
               key={index}
               style={[
                 styles.itemContainer,
-                selectedVideo?.name === item
-                  ? styles.selectedItem
-                  : styles.normalItem,
+                selectedFile === item ? styles.selectedItem : styles.normalItem,
               ]}
               onPress={() => handleSelect(item)}
               onLayout={handleLayout}
             >
               <Ionicons
-                name={selectedVideo?.name === item ? "checkmark" : "play"}
+                name={selectedFile === item ? "checkmark" : "play"}
                 size={20}
                 color="white"
               />

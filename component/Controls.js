@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import {
   View,
   TouchableOpacity,
@@ -13,7 +13,7 @@ import { reloadSource } from "../lib/api";
 export default function Controls({
   player,
   files,
-  selectedVideo,
+  selectedFile,
   handleSelect,
   isShowList,
   setShowList,
@@ -83,24 +83,21 @@ export default function Controls({
   };
 
   const onPrevios = () => {
-    const currentIndex = files.indexOf(selectedVideo?.name);
+    const currentIndex = files.indexOf(selectedFile);
     if (currentIndex > 0) {
       handleSelect(files[currentIndex - 1]);
     }
   };
 
   const onNext = () => {
-    const currentIndex = files.indexOf(selectedVideo?.name);
+    const currentIndex = files.indexOf(selectedFile);
     if (currentIndex < files.length - 1) {
       handleSelect(files[currentIndex + 1]);
     }
   };
 
   const onReloadSource = async () => {
-    const statusOk = await reloadSource(selectedVideo.name);
-    if (statusOk) {
-      handleSelect(selectedVideo.name);
-    }
+    await reloadSource(selectedFile);
   };
 
   const handlePress = () => {
