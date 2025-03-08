@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   TouchableOpacity,
@@ -18,7 +18,7 @@ export default function Controls({
   isShowList,
   setShowList,
 }) {
-  const visibleRef = useRef(true);
+  const [isVisible, setVisible] = useState(true);
   const [isEnded, setEnded] = useState(false);
   const fadeAnim = useState(new Animated.Value(1))[0];
   const slideAnim = useState(new Animated.Value(0))[0];
@@ -52,7 +52,7 @@ export default function Controls({
         duration: 300,
         useNativeDriver: true,
       }),
-    ]).start(() => (visibleRef.current = true));
+    ]).start(() => setVisible(true));
   };
 
   const fadeOut = () => {
@@ -67,7 +67,7 @@ export default function Controls({
         duration: 300,
         useNativeDriver: true,
       }),
-    ]).start(() => (visibleRef.current = false));
+    ]).start(() => setVisible(false));
   };
 
   const onPlayPause = () => {
@@ -104,7 +104,7 @@ export default function Controls({
   };
 
   const handlePress = () => {
-    if (visibleRef.current) {
+    if (isVisible) {
       fadeOut();
     } else {
       fadeIn();
