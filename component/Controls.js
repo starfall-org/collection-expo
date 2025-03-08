@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  StyleSheet,
-  Animated,
-} from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { useEvent, useEventListener } from "expo";
 import { Ionicons } from "@expo/vector-icons";
 import { reloadSource } from "../lib/api";
@@ -18,10 +12,8 @@ export default function Controls({
   isShowList,
   setShowList,
 }) {
-  const [isVisible, setVisible] = useState(true);
   const [isEnded, setEnded] = useState(false);
-  const fadeAnim = useState(new Animated.Value(1))[0];
-  const slideAnim = useState(new Animated.Value(0))[0];
+
   const { isPlaying } = useEvent(player, "playingChange", {
     isPlaying: player.playing,
   });
@@ -39,36 +31,6 @@ export default function Controls({
       onNext();
     }, 800);
   });
-
-  const fadeIn = () => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-    ]).start(() => setVisible(true));
-  };
-
-  const fadeOut = () => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 100,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-    ]).start(() => setVisible(false));
-  };
 
   const onPlayPause = () => {
     if (isPlaying) {
@@ -100,62 +62,36 @@ export default function Controls({
     await reloadSource(selectedFile);
   };
 
-  const handlePress = () => {
-    if (isVisible) {
-      fadeOut();
-    } else {
-      fadeIn();
-    }
-  };
-
-  if (!isVisible) {
-    return (
-      <TouchableWithoutFeedback onPress={handlePress}>
-        <View style={styles.container} />
-      </TouchableWithoutFeedback>
-    );
-  }
-
   const Content = () => (
-    <TouchableWithoutFeedback onPress={handlePress}>
-      <Animated.View
-        style={[
-          styles.container,
-          {
-            opacity: fadeAnim,
-            transform: [{ translateY: slideAnim }],
-          },
-        ]}
-      >
-        <View style={styles.controlsContainer}>
-          <TouchableOpacity onPress={setShowList}>
-            <Ionicons name="list" size={30} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onPrevios}>
-            <Ionicons name="play-skip-back-circle" size={30} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onPlayPause}>
-            <Ionicons
-              name={
-                isEnded
-                  ? "play-circle-sharp"
-                  : isPlaying
-                  ? "pause-circle"
-                  : "play-circle"
-              }
-              size={30}
-              color="#fff"
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onNext}>
-            <Ionicons name="play-skip-forward-circle" size={30} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onReloadSource}>
-            <Ionicons name="cloud-download" size={30} color="#fff" />
-          </TouchableOpacity>
-        </View>
-      </Animated.View>
-    </TouchableWithoutFeedback>
+    <View>
+      <View style={styles.controlsContainer}>
+        <TouchableOpacity onPress={setShowList}>
+          <Ionicons name="list" size={30} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onPrevios}>
+          <Ionicons name="play-skip-back-circle" size={30} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onPlayPause}>
+          <Ionicons
+            name={
+              isEnded
+                ? "play-circle-sharp"
+                : isPlaying
+                ? "pause-circle"
+                : "play-circle"
+            }
+            size={30}
+            color="#fff"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onNext}>
+          <Ionicons name="play-skip-forward-circle" size={30} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onReloadSource}>
+          <Ionicons name="cloud-download" size={30} color="#fff" />
+        </TouchableOpacity>
+      </View>
+    </View>
   );
   return <>{isShowList ? null : <Content />}</>;
 }
