@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  StyleSheet,
+} from "react-native";
 import { useEvent, useEventListener } from "expo";
 import { Ionicons } from "@expo/vector-icons";
 import { reloadSource } from "../lib/api";
@@ -93,7 +98,11 @@ export default function Controls({
       </View>
     </View>
   );
-  return <>{isShowList ? null : <Content />}</>;
+  return (
+    <TouchableWithoutFeedback>
+      {isShowList ? null : <Content />}
+    </TouchableWithoutFeedback>
+  );
 }
 
 const styles = StyleSheet.create({
