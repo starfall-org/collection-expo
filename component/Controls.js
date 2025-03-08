@@ -157,11 +157,7 @@ export default function Controls({
       >
         <View style={styles.controlsContainer}>
           <TouchableOpacity onPress={setShowList}>
-            <Ionicons
-              name={isShowList ? "list-circle" : "list-circle-outline"}
-              size={30}
-              color="#fff"
-            />
+            <Ionicons name="list" size={30} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity onPress={onPrevios}>
             <Ionicons name="play-skip-back-circle" size={30} color="#fff" />
