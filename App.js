@@ -51,15 +51,14 @@ export default function App() {
     <View style={styles.container}>
       <StatusBar barStyle={"default"} backgroundColor={"black"} hidden />
       <View style={styles.content}>
-        {sourceRef.current && (
-          <View style={styles.videoContainer}>
-            <VideoView
-              style={styles.video}
-              player={player}
-              nativeControls={false}
-            />
-          </View>
-        )}
+        <View style={styles.videoContainer}>
+          <VideoView
+            style={styles.video}
+            player={player}
+            nativeControls={false}
+          />
+        </View>
+
         {showPlaylist && (
           <Playlist
             files={files}

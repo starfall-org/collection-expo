@@ -19,7 +19,7 @@ export default function Controls({
   setShowList,
 }) {
   const visibleRef = useRef(true);
-  const endedRef = useRef(false);
+  const [isEnded, setEnded] = useState(false);
   const fadeAnim = useState(new Animated.Value(1))[0];
   const slideAnim = useState(new Animated.Value(0))[0];
   const { isPlaying } = useEvent(player, "playingChange", {
@@ -28,13 +28,13 @@ export default function Controls({
 
   useEventListener(player, "statusChange", ({ status }) => {
     if (status === "readyToPlay") {
-      endedRef.current = false;
+      setEnded(false);
       player.play();
     }
   });
 
   useEventListener(player, "playToEnd", () => {
-    endedRef.current = true;
+    setEnded(true);
     setTimeout(() => {
       onNext();
     }, 800);
@@ -74,7 +74,7 @@ export default function Controls({
     if (isPlaying) {
       player.pause();
     } else {
-      if (endedRef.current) {
+      if (isEnded) {
         player.replay();
       } else {
         player.play();
@@ -140,7 +140,7 @@ export default function Controls({
           <TouchableOpacity onPress={onPlayPause}>
             <Ionicons
               name={
-                endedRef.current
+                isEnded
                   ? "play-circle-sharp"
                   : isPlaying
                   ? "pause-circle"
