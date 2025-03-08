@@ -99,9 +99,14 @@ export default function Controls({
     </View>
   );
   return (
-    <TouchableWithoutFeedback>
-      {isShowList ? null : <Content />}
-    </TouchableWithoutFeedback>
+    <>
+      {" "}
+      {isShowList ? null : (
+        <TouchableWithoutFeedback>
+          <Content />
+        </TouchableWithoutFeedback>
+      )}
+    </>
   );
 }
 
