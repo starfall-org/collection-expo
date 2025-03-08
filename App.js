@@ -114,5 +114,6 @@ const styles = StyleSheet.create({
   },
   video: {
     width: width,
+    height: "auto",
   },
 });
