@@ -8,7 +8,7 @@ import { listFiles, getSource } from "./lib/api";
 import Playlist from "./component/Playlist";
 import Controls from "./component/Controls";
 
-const { width, height } = Dimensions.get("screen");
+const { width } = Dimensions.get("screen");
 
 export default function App() {
   useKeepAwake();
@@ -114,6 +114,5 @@ const styles = StyleSheet.create({
   },
   video: {
     width: width,
-    height: height,
   },
 });
