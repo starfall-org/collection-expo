@@ -38,14 +38,17 @@ export default function App() {
 
   useEffect(() => {
     if (selectedFile) {
-      (async () => {
-        const sourceURI = await getSource(selectedFile);
-        const index = files.findIndex((file) => file.name === selectedFile);
-        const newFiles = [...files];
-        newFiles[index] = { name: selectedFile, source: sourceURI };
-        setFiles(newFiles);
-        player.replace(sourceURI);
-      })();
+      const index = files.findIndex((file) => file.name === selectedFile);
+      if (files[index].source) {
+        player.replace(files[index].source);
+      } else {
+        getSource(selectedFile).then((sourceURI) => {
+          const newFiles = [...files];
+          newFiles[index] = { name: selectedFile, source: sourceURI };
+          setFiles(newFiles);
+          player.replace(sourceURI);
+        });
+      }
     }
   }, [selectedFile]);
 
