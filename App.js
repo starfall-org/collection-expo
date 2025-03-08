@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Dimensions, StyleSheet } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -14,7 +14,7 @@ export default function App() {
   useKeepAwake();
   const [files, setFiles] = useState([]);
   const [showPlaylist, setShowPlaylist] = useState(false);
-  const sourceRef = useRef(null);
+  const [source, setSource] = useState(null);
   const player = useVideoPlayer(sourceRef.current?.uri, (player) => {
     player.showNowPlayingNotification = true;
   });
@@ -34,13 +34,18 @@ export default function App() {
     })();
   }, []);
 
+  useEffect(() => {
+    if (player && source) {
+      player.replace(source.uri);
+    }
+  }, [source]);
+
   const handleSelect = async (fileName) => {
     try {
       const pUrl = await getSource(fileName);
       if (pUrl) {
         await AsyncStorage.setItem("selectedVideo", fileName);
-        sourceRef.current = { uri: pUrl, name: fileName };
-        player.replace(pUrl);
+        setSource({ uri: pUrl, name: fileName });
       }
     } catch (error) {
       console.error("Error opening file:", error);
