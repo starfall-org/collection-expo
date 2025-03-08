@@ -15,7 +15,7 @@ export default function App() {
   const [files, setFiles] = useState([]);
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [source, setSource] = useState(null);
-  const player = useVideoPlayer(sourceRef.current?.uri, (player) => {
+  const player = useVideoPlayer(source?.uri, (player) => {
     player.showNowPlayingNotification = true;
   });
 
@@ -35,18 +35,18 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (player && source) {
-      player.replace(source.uri);
-    }
+    (async () => {
+      if (source && source.uri === null) {
+        const uri = await getSource(source.name);
+        setSource({ uri, name: source.name });
+      }
+    })();
   }, [source]);
 
   const handleSelect = async (fileName) => {
     try {
-      const pUrl = await getSource(fileName);
-      if (pUrl) {
-        await AsyncStorage.setItem("selectedVideo", fileName);
-        setSource({ uri: pUrl, name: fileName });
-      }
+      await AsyncStorage.setItem("selectedVideo", fileName);
+      setSource({ uri: null, name: fileName });
     } catch (error) {
       console.error("Error opening file:", error);
     }
