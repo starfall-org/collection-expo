@@ -166,7 +166,7 @@ export default function Controls({
             <Ionicons
               name={
                 isEnded
-                  ? "refresh-circle"
+                  ? "play-circle-sharp"
                   : isPlaying
                   ? "pause-circle"
                   : "play-circle"
