@@ -31,7 +31,7 @@ export default function Playlist({
   }, []);
 
   useEffect(() => {
-    const index = files.indexOf(selectedFile) || 1;
+    const index = files.indexOf(selectedFile);
     const offset = index * layout;
 
     if (scrollViewRef.current) {
