@@ -5,7 +5,6 @@ import {
   TouchableWithoutFeedback,
   StyleSheet,
   Animated,
-  ToastAndroid,
 } from "react-native";
 import { useEvent, useEventListener } from "expo";
 import { Ionicons } from "@expo/vector-icons";
