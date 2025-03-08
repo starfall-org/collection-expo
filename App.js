@@ -13,6 +13,7 @@ const { width, height } = Dimensions.get("window");
 export default function App() {
   useKeepAwake();
   const [files, setFiles] = useState([]);
+  const [sources, setSources] = useState({});
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const player = useVideoPlayer(null, (player) => {
@@ -22,15 +23,13 @@ export default function App() {
   useEffect(() => {
     (async () => {
       const files = await listFiles();
-      for (const file of files) {
-        setFiles((prev) => [...prev, { name: file, source: null }]);
-      }
+      setFiles(files);
       if (files.length > 0) {
         const cachedSelectedVideo = await AsyncStorage.getItem("selectedVideo");
         if (cachedSelectedVideo) {
           handleSelect(cachedSelectedVideo);
         } else {
-          handleSelect(files[0].name);
+          handleSelect(files[0]);
         }
       }
     })();
@@ -38,14 +37,12 @@ export default function App() {
 
   useEffect(() => {
     if (selectedFile) {
-      const index = files.findIndex((file) => file.name === selectedFile);
-      if (files[index].source) {
-        player.replace(files[index].source);
+      if (sources[selectedFile]) {
+        player.replace(sources[selectedFile]);
       } else {
         getSource(selectedFile).then((sourceURI) => {
-          const newFiles = [...files];
-          newFiles[index] = { name: selectedFile, source: sourceURI };
-          setFiles(newFiles);
+          const newSources = { ...sources, [selectedFile]: sourceURI };
+          setSources(newSources);
           player.replace(sourceURI);
         });
       }

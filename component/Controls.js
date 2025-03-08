@@ -48,7 +48,7 @@ export default function Controls({
     const currentIndex = files.indexOf(selectedFile);
     if (currentIndex > 0) {
       const prevFile = files[currentIndex - 1];
-      handleSelect(prevFile.name);
+      handleSelect(prevFile);
     }
   };
 
@@ -56,7 +56,7 @@ export default function Controls({
     const currentIndex = files.indexOf(selectedFile);
     if (currentIndex < files.length - 1) {
       const nextFile = files[currentIndex + 1];
-      handleSelect(nextFile.name);
+      handleSelect(nextFile);
     }
   };
 

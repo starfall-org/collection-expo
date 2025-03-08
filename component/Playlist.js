@@ -59,20 +59,18 @@ export default function Playlist({
               key={index}
               style={[
                 styles.itemContainer,
-                selectedFile === item.name
-                  ? styles.selectedItem
-                  : styles.normalItem,
+                selectedFile === item ? styles.selectedItem : styles.normalItem,
               ]}
-              onPress={() => handleSelect(item.name)}
+              onPress={() => handleSelect(item)}
               onLayout={handleLayout}
             >
               <Ionicons
-                name={selectedFile === item.name ? "checkmark" : "play"}
+                name={selectedFile === item ? "checkmark" : "play"}
                 size={20}
                 color="white"
               />
               <Text style={styles.itemText} numberOfLines={1}>
-                {item.name}
+                {item}
               </Text>
             </TouchableOpacity>
           ))}
