@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Dimensions, StyleSheet } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -52,14 +52,14 @@ export default function App() {
     }
   }, [selectedFile]);
 
-  const handleSelect = (fileName) => {
+  const handleSelect = useCallback((fileName) => {
     try {
       setSelectedFile(fileName);
       AsyncStorage.setItem("selectedVideo", fileName);
     } catch (error) {
       console.error("Error opening file:", error);
     }
-  };
+  }, []);
 
   return (
     <View style={styles.container}>

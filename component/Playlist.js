@@ -6,7 +6,7 @@ import {
   Animated,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 
 export default function Playlist({
   files,
@@ -39,14 +39,14 @@ export default function Playlist({
     }
   }, [scrollViewRef.current]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     Animated.spring(slideAnim, {
       toValue: -300,
       useNativeDriver: true,
     }).start(() => {
       closePlaylist();
     });
-  };
+  }, []);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { useEvent, useEventListener } from "expo";
 import { Ionicons } from "@expo/vector-icons";
@@ -32,7 +32,7 @@ export default function Controls({
     }, 800);
   });
 
-  const onPlayPause = () => {
+  const onPlayPause = useCallback(() => {
     if (isPlaying) {
       player.pause();
     } else {
@@ -42,27 +42,27 @@ export default function Controls({
         player.play();
       }
     }
-  };
+  }, [isPlaying, isEnded]);
 
-  const onPrevios = () => {
+  const onPrevios = useCallback(() => {
     const currentIndex = files.indexOf(selectedFile);
     if (currentIndex > 0) {
       const prevFile = files[currentIndex - 1];
       handleSelect(prevFile);
     }
-  };
+  }, [files, selectedFile]);
 
-  const onNext = () => {
+  const onNext = useCallback(() => {
     const currentIndex = files.indexOf(selectedFile);
     if (currentIndex < files.length - 1) {
       const nextFile = files[currentIndex + 1];
       handleSelect(nextFile);
     }
-  };
+  }, [files, selectedFile]);
 
-  const onReloadSource = async () => {
+  const onReloadSource = useCallback(async () => {
     await reloadSource(selectedFile);
-  };
+  }, [selectedFile]);
 
   const Content = () => (
     <View style={styles.container}>
