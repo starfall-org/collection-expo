@@ -2,7 +2,7 @@
   "expo": {
     "name": "Collection",
     "slug": "collection",
-    "version": "1.3.2",
+    "version": "1.3.3",
     "orientation": "default",
     "icon": "./assets/Icon.png",
     "userInterfaceStyle": "light",

@@ -15,7 +15,7 @@ export default function App() {
   const [files, setFiles] = useState([]);
   const [showPlaylist, setShowPlaylist] = useState(false);
   const sourceRef = useRef(null);
-  const player = useVideoPlayer(selectedVideo?.uri, (player) => {
+  const player = useVideoPlayer(sourceRef.current?.uri, (player) => {
     player.showNowPlayingNotification = true;
   });
 
