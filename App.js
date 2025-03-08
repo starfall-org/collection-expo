@@ -15,15 +15,16 @@ export default function App() {
   const [files, setFiles] = useState([]);
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [sourceURI, setSourceURI] = useState(null);
-  const player = useVideoPlayer(sourceURI, (player) => {
+  const player = useVideoPlayer(null, (player) => {
     player.showNowPlayingNotification = true;
   });
 
   useEffect(() => {
     (async () => {
       const files = await listFiles();
-      setFiles(files);
+      for (const file of files) {
+        setFiles((prev) => [...prev, { name: file, source: null }]);
+      }
       if (files.length > 0) {
         const cachedSelectedVideo = await AsyncStorage.getItem("selectedVideo");
         if (cachedSelectedVideo) {
@@ -37,19 +38,21 @@ export default function App() {
 
   useEffect(() => {
     if (selectedFile) {
-      getSource(selectedFile).then((source) => {
-        setSourceURI(source);
-      });
+      (async () => {
+        const sourceURI = await getSource(selectedFile);
+        const index = files.findIndex((file) => file.name === selectedFile);
+        const newFiles = [...files];
+        newFiles[index] = { name: selectedFile, source: sourceURI };
+        setFiles(newFiles);
+        player.replace(sourceURI);
+      })();
     }
-    if (sourceURI) {
-      player.replace(sourceURI);
-    }
-  }, [selectedFile, setSourceURI]);
+  }, [selectedFile]);
 
-  const handleSelect = async (fileName) => {
+  const handleSelect = (fileName) => {
     try {
-      await AsyncStorage.setItem("selectedVideo", fileName);
       setSelectedFile(fileName);
+      AsyncStorage.setItem("selectedVideo", fileName);
     } catch (error) {
       console.error("Error opening file:", error);
     }

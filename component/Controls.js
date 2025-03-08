@@ -47,14 +47,20 @@ export default function Controls({
   const onPrevios = () => {
     const currentIndex = files.indexOf(selectedFile);
     if (currentIndex > 0) {
-      handleSelect(files[currentIndex - 1]);
+      const prevFile = files[currentIndex - 1];
+      if (prevFile !== selectedFile) {
+        handleSelect(prevFile);
+      }
     }
   };
 
   const onNext = () => {
     const currentIndex = files.indexOf(selectedFile);
     if (currentIndex < files.length - 1) {
-      handleSelect(files[currentIndex + 1]);
+      const nextFile = files[currentIndex + 1];
+      if (nextFile !== selectedFile) {
+        handleSelect(nextFile);
+      }
     }
   };
 
