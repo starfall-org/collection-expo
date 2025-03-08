@@ -48,8 +48,8 @@ export default function Controls({
     const currentIndex = files.indexOf(selectedFile);
     if (currentIndex > 0) {
       const prevFile = files[currentIndex - 1];
-      if (prevFile !== selectedFile) {
-        handleSelect(prevFile);
+      if (prevFile.name !== selectedFile) {
+        handleSelect(prevFile.name);
       }
     }
   };
@@ -58,8 +58,8 @@ export default function Controls({
     const currentIndex = files.indexOf(selectedFile);
     if (currentIndex < files.length - 1) {
       const nextFile = files[currentIndex + 1];
-      if (nextFile !== selectedFile) {
-        handleSelect(nextFile);
+      if (nextFile.name !== selectedFile) {
+        handleSelect(nextFile.name);
       }
     }
   };
