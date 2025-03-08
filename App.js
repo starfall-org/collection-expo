@@ -42,7 +42,7 @@ export default function App() {
         getSource(selectedFile).then((sourceURI) => {
           const newSources = { ...sources, [selectedFile]: sourceURI };
           setSources(newSources);
-          player.replace(sourceURI);
+          player.replace(newSources[selectedFile]);
         });
       }
     }
