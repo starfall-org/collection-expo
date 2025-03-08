@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Dimensions, StyleSheet } from "react-native";
 import { useVideoPlayer, VideoView } from "expo-video";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -13,9 +13,8 @@ const { width, height } = Dimensions.get("screen");
 export default function App() {
   useKeepAwake();
   const [files, setFiles] = useState([]);
-  const [selectedVideo, setSelectedVideo] = useState(null);
   const [showPlaylist, setShowPlaylist] = useState(false);
-
+  const sourceRef = useRef({});
   const player = useVideoPlayer(selectedVideo?.uri, (player) => {
     player.showNowPlayingNotification = true;
   });
@@ -40,7 +39,7 @@ export default function App() {
       const pUrl = await getSource(fileName);
       if (pUrl) {
         await AsyncStorage.setItem("selectedVideo", fileName);
-        setSelectedVideo({ uri: pUrl, name: fileName });
+        sourceRef.current = { uri: pUrl, name: fileName };
         player.replace(pUrl);
       }
     } catch (error) {
