@@ -8,7 +8,7 @@ import { listFiles, getSource } from "./lib/api";
 import Playlist from "./component/Playlist";
 import Controls from "./component/Controls";
 
-const { width } = Dimensions.get("screen");
+const { width, height } = Dimensions.get("screen");
 
 export default function App() {
   useKeepAwake();
