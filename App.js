@@ -37,9 +37,8 @@ export default function App() {
 
   useEffect(() => {
     if (selectedFile) {
-      if (sources[selectedFile]) {
-        player.replace(sources[selectedFile]);
-      } else {
+      player.replace(sources[selectedFile]);
+      if (!sources[selectedFile]) {
         getSource(selectedFile).then((sourceURI) => {
           const newSources = { ...sources, [selectedFile]: sourceURI };
           setSources(newSources);
