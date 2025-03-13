@@ -10,12 +10,14 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@dr.pogodin/react-native-fs": "^2.32.0",
     "@react-native-async-storage/async-storage": "1.23.1",
     "expo": "^52.0.37",
     "expo-file-system": "~18.0.11",
     "expo-keep-awake": "~14.0.2",
     "expo-navigation-bar": "~4.0.8",
     "expo-network": "~7.0.5",
+    "expo-splash-screen": "~0.29.22",
     "expo-status-bar": "~2.0.1",
     "expo-updates": "~0.27.1",
     "expo-video": "~2.0.5",
@@ -23,8 +25,7 @@
     "react-dom": "18.3.1",
     "react-native": "0.76.7",
     "react-native-exit-app": "^2.0.0",
-    "react-native-web": "~0.19.13",
-    "expo-splash-screen": "~0.29.22"
+    "react-native-web": "~0.19.13"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
