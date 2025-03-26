@@ -1,48 +1,25 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
-import { useEvent, useEventListener } from "expo";
 import { Ionicons } from "@expo/vector-icons";
 import { reloadSource } from "../lib/api";
 
 export default function Controls({
-  player,
   files,
   selectedFile,
   handleSelect,
   isShowList,
   setShowList,
+  isPlaying,
+  onPlay,
+  onPause,
 }) {
-  const [isEnded, setEnded] = useState(false);
-
-  const { isPlaying } = useEvent(player, "playingChange", {
-    isPlaying: player.playing,
-  });
-
-  useEventListener(player, "statusChange", ({ status }) => {
-    if (status === "readyToPlay") {
-      setEnded(false);
-      player.play();
-    }
-  });
-
-  useEventListener(player, "playToEnd", () => {
-    setEnded(true);
-    setTimeout(() => {
-      onNext();
-    }, 800);
-  });
-
   const onPlayPause = useCallback(() => {
     if (isPlaying) {
-      player.pause();
+      onPause();
     } else {
-      if (isEnded) {
-        player.replay();
-      } else {
-        player.play();
-      }
+      onPlay();
     }
-  }, [isPlaying, isEnded]);
+  }, [isPlaying, onPlay, onPause]);
 
   const onPrevios = useCallback(() => {
     const currentIndex = files.indexOf(selectedFile);
@@ -75,13 +52,7 @@ export default function Controls({
         </TouchableOpacity>
         <TouchableOpacity onPress={onPlayPause}>
           <Ionicons
-            name={
-              isEnded
-                ? "play-circle-sharp"
-                : isPlaying
-                ? "pause-circle"
-                : "play-circle"
-            }
+            name={isPlaying ? "pause-circle" : "play-circle"}
             size={30}
             color="#fff"
           />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { View, Dimensions, StyleSheet } from "react-native";
-import { useVideoPlayer, VideoView } from "expo-video";
+import Video from "react-native-video";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
 import { useKeepAwake } from "expo-keep-awake";
@@ -16,9 +16,8 @@ export default function App() {
   const [sources, setSources] = useState({});
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const player = useVideoPlayer(null, (player) => {
-    player.showNowPlayingNotification = true;
-  });
+  const [videoSource, setVideoSource] = useState(null);
+  const [isPlaying, setPlaying] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -37,18 +36,9 @@ export default function App() {
 
   useEffect(() => {
     if (selectedFile) {
-      const currentFile = selectedFile;
-      if (sources[currentFile]) {
-        player.replace(sources[currentFile]);
-      } else {
-        getSource(currentFile).then((sourceURI) => {
-          const newSources = { ...sources, [currentFile]: sourceURI };
-          setSources(newSources);
-          if (selectedFile === currentFile) {
-            player.replace(sourceURI);
-          }
-        });
-      }
+      getSource(selectedFile).then((sourceURI) => {
+        setVideoSource(sourceURI);
+      });
     }
   }, [selectedFile]);
 
@@ -66,10 +56,13 @@ export default function App() {
       <StatusBar barStyle={"default"} backgroundColor={"black"} hidden />
       <View style={styles.content}>
         <View style={styles.videoContainer}>
-          <VideoView
+          <Video
+            source={{ uri: videoSource }}
             style={styles.video}
-            player={player}
-            nativeControls={false}
+            controls={false}
+            resizeMode="contain"
+            paused={!isPlaying} // Điều khiển trạng thái phát/dừng
+            onEnd={() => setPlaying(false)} // Dừng khi video kết thúc
           />
         </View>
 
@@ -83,12 +76,14 @@ export default function App() {
         )}
 
         <Controls
-          player={player}
           files={files}
           selectedFile={selectedFile}
           handleSelect={handleSelect}
           isShowList={showPlaylist}
           setShowList={() => setShowPlaylist(!showPlaylist)}
+          isPlaying={isPlaying} // Truyền trạng thái phát/dừng
+          onPlay={() => setPlaying(true)} // Callback khi nhấn Play
+          onPause={() => setPlaying(false)} // Callback khi nhấn Pause
         />
       </View>
     </View>
@@ -102,16 +97,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "black",
-  },
-  loadingText: {
-    color: "white",
-    fontSize: 18,
   },
   videoContainer: {
     flex: 1,
