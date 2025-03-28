@@ -50,15 +50,6 @@
       }
     },
     "owner": "tonglanhchua",
-    "plugins": [
-      [
-        "expo-video",
-        {
-          "supportsBackgroundPlayback": true,
-          "supportsPictureInPicture": true
-        }
-      ]
-    ],
     "runtimeVersion": {
       "policy": "appVersion"
     },
