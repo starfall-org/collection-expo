@@ -13,7 +13,6 @@ const { width, height } = Dimensions.get("window");
 export default function App() {
   useKeepAwake();
   const [files, setFiles] = useState([]);
-  const [sources, setSources] = useState({});
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [videoSource, setVideoSource] = useState(null);
@@ -61,8 +60,8 @@ export default function App() {
             style={styles.video}
             controls={false}
             resizeMode="contain"
-            paused={!isPlaying} // Điều khiển trạng thái phát/dừng
-            onEnd={() => setPlaying(false)} // Dừng khi video kết thúc
+            paused={!isPlaying}
+            onEnd={() => setPlaying(false)}
           />
         </View>
 
@@ -81,9 +80,9 @@ export default function App() {
           handleSelect={handleSelect}
           isShowList={showPlaylist}
           setShowList={() => setShowPlaylist(!showPlaylist)}
-          isPlaying={isPlaying} // Truyền trạng thái phát/dừng
-          onPlay={() => setPlaying(true)} // Callback khi nhấn Play
-          onPause={() => setPlaying(false)} // Callback khi nhấn Pause
+          isPlaying={isPlaying}
+          onPlay={() => setPlaying(true)}
+          onPause={() => setPlaying(false)}
         />
       </View>
     </View>
