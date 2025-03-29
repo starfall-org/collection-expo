@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Dimensions, StyleSheet } from "react-native";
 import Video from "react-native-video";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,7 +17,6 @@ export default function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [videoSource, setVideoSource] = useState(null);
   const [isPlaying, setPlaying] = useState(false);
-  const player = useRef(null);
 
   useEffect(() => {
     (async () => {
@@ -53,11 +52,11 @@ export default function App() {
 
   const togglePlay = useCallback(() => {
     if (isPlaying) {
-      onPause();
+      setPlaying(false);
     } else {
-      onPlay();
+      setPlaying(true);
     }
-  }, [isPlaying, onPlay, onPause]);
+  }, [isPlaying, setPlaying]);
 
   const onPrevios = useCallback(() => {
     const currentIndex = files.indexOf(selectedFile);
@@ -96,7 +95,6 @@ export default function App() {
             }}
             onLoad={() => {
               setPlaying(true);
-              player.current.play();
             }}
           />
         </View>
