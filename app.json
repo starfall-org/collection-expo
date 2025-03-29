@@ -5,13 +5,8 @@
     "version": "2.0.0",
     "orientation": "default",
     "icon": "./assets/Icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/Splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#000000"
-    },
     "notification": {
       "icon": "./assets/Icon.png",
       "androidMode": "default"
@@ -29,17 +24,7 @@
         "android.permission.INTERNET",
         "android.permission.POST_NOTIFICATIONS"
       ],
-      "package": "app.expo.collection",
-      "splash": {
-        "image": "./assets/Splash.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#000000",
-        "mdpi": "./assets/Splash.png",
-        "hdpi": "./assets/Splash.png",
-        "xhdpi": "./assets/Splash.png",
-        "xxhdpi": "./assets/Splash.png",
-        "xxxhdpi": "./assets/Splash.png"
-      }
+      "package": "app.expo.collection"
     },
     "web": {
       "favicon": "./assets/Icon.png"
