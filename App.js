@@ -4,7 +4,7 @@ import Video from "react-native-video";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
 import { useKeepAwake } from "expo-keep-awake";
-import { listFiles, getSource } from "./lib/api";
+import { listFiles, getSource, reloadSource } from "./lib/api";
 import Playlist from "./component/Playlist";
 import Controls from "./component/Controls";
 
@@ -50,6 +50,39 @@ export default function App() {
     }
   }, []);
 
+  const handleEnded = useCallback(() => {
+    setPlaying(false);
+    onNext();
+  }, []);
+
+  const togglePlay = useCallback(() => {
+    if (isPlaying) {
+      onPause();
+    } else {
+      onPlay();
+    }
+  }, [isPlaying, onPlay, onPause]);
+
+  const onPrevios = useCallback(() => {
+    const currentIndex = files.indexOf(selectedFile);
+    if (currentIndex > 0) {
+      const prevFile = files[currentIndex - 1];
+      handleSelect(prevFile);
+    }
+  }, [files, selectedFile]);
+
+  const onNext = useCallback(() => {
+    const currentIndex = files.indexOf(selectedFile);
+    if (currentIndex < files.length - 1) {
+      const nextFile = files[currentIndex + 1];
+      handleSelect(nextFile);
+    }
+  }, [files, selectedFile]);
+
+  const onReloadSource = useCallback(async () => {
+    await reloadSource(selectedFile);
+  }, [selectedFile]);
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle={"default"} backgroundColor={"black"} hidden />
@@ -61,7 +94,8 @@ export default function App() {
             controls={false}
             resizeMode="contain"
             paused={!isPlaying}
-            onEnd={() => setPlaying(false)}
+            onEnd={() => handleEnded()}
+            autoPlay
           />
         </View>
 
@@ -75,14 +109,13 @@ export default function App() {
         )}
 
         <Controls
-          files={files}
-          selectedFile={selectedFile}
-          handleSelect={handleSelect}
           isShowList={showPlaylist}
           setShowList={() => setShowPlaylist(!showPlaylist)}
           isPlaying={isPlaying}
-          onPlay={() => setPlaying(true)}
-          onPause={() => setPlaying(false)}
+          togglePlay={togglePlay}
+          onNext={onNext}
+          onPrevios={onPrevios}
+          onReloadSource={onReloadSource}
         />
       </View>
     </View>
