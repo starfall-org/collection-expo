@@ -16,7 +16,7 @@ export default function App() {
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [videoSource, setVideoSource] = useState(null);
-  const [isPlaying, setPlaying] = useState(false);
+  const [isPlaying, setPlaying] = useState(true);
 
   useEffect(() => {
     (async () => {
