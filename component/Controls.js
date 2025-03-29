@@ -1,46 +1,16 @@
 import React, { useCallback } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { reloadSource } from "../lib/api";
 
 export default function Controls({
-  files,
-  selectedFile,
-  handleSelect,
   isShowList,
   setShowList,
   isPlaying,
-  onPlay,
-  onPause,
+  togglePlay,
+  onNext,
+  onPrevios,
+  onReloadSource,
 }) {
-  const onPlayPause = useCallback(() => {
-    if (isPlaying) {
-      onPause();
-    } else {
-      onPlay();
-    }
-  }, [isPlaying, onPlay, onPause]);
-
-  const onPrevios = useCallback(() => {
-    const currentIndex = files.indexOf(selectedFile);
-    if (currentIndex > 0) {
-      const prevFile = files[currentIndex - 1];
-      handleSelect(prevFile);
-    }
-  }, [files, selectedFile]);
-
-  const onNext = useCallback(() => {
-    const currentIndex = files.indexOf(selectedFile);
-    if (currentIndex < files.length - 1) {
-      const nextFile = files[currentIndex + 1];
-      handleSelect(nextFile);
-    }
-  }, [files, selectedFile]);
-
-  const onReloadSource = useCallback(async () => {
-    await reloadSource(selectedFile);
-  }, [selectedFile]);
-
   const Content = () => (
     <View style={styles.container}>
       <View style={styles.controlsContainer}>
@@ -50,7 +20,7 @@ export default function Controls({
         <TouchableOpacity onPress={onPrevios}>
           <Ionicons name="play-skip-back-circle" size={30} color="#fff" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={onPlayPause}>
+        <TouchableOpacity onPress={togglePlay}>
           <Ionicons
             name={isPlaying ? "pause-circle" : "play-circle"}
             size={30}
