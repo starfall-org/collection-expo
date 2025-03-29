@@ -92,7 +92,6 @@ export default function App() {
             onEnd={() => {
               onNext();
             }}
-           
           />
         </View>
 
