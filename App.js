@@ -90,12 +90,9 @@ export default function App() {
             resizeMode="contain"
             paused={!isPlaying}
             onEnd={() => {
-              setPlaying(false);
               onNext();
             }}
-            onLoad={() => {
-              setPlaying(true);
-            }}
+           
           />
         </View>
 
